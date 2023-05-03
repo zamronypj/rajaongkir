@@ -31,20 +31,17 @@
 
 // ------------------------------------------------------------------------
 
-namespace Steevenz;
+namespace Juhara;
 
 // ------------------------------------------------------------------------
 
-use O2System\Curl;
-use O2System\Kernel\Http\Message\Uri;
-use O2System\Spl\Traits\Collectors\ErrorCollectorTrait;
+use GuzzleHttp\Client;
 
 /**
  * Class Rajaongkir
- * @package Steevenz
+ * @package Juhara
  */
 class Rajaongkir {
-	use ErrorCollectorTrait;
 
 	/**
 	 * Constant Account Type
@@ -100,7 +97,7 @@ class Rajaongkir {
 			'pos',
 			'tiki',
 		],
-		'basic'   => [
+		'basic' => [
 			'jne',
 			'pos',
 			'tiki',
@@ -108,7 +105,7 @@ class Rajaongkir {
 			'esl',
 			'rpx',
 		],
-		'pro'     => [
+		'pro' => [
 			'jne',
 			'pos',
 			'tiki',
@@ -148,7 +145,7 @@ class Rajaongkir {
 		'basic'   => [
 			'jne',
 		],
-		'pro'     => [
+		'pro' => [
 			'jne',
 			'pos',
 			'tiki',
@@ -206,6 +203,8 @@ class Rajaongkir {
 	 */
 	protected $response;
 
+	private $client;
+
 	// ------------------------------------------------------------------------
 
 	/**
@@ -214,7 +213,9 @@ class Rajaongkir {
 	 * @access  public
 	 * @throws  \InvalidArgumentException
 	 */
-	public function __construct( $apiKey = null, $accountType = null ) {
+	public function __construct( $apiKey = null, $accountType = null )
+	{
+
 		if ( isset( $apiKey ) ) {
 			if ( is_array( $apiKey ) ) {
 				if ( isset( $apiKey['api_key'] ) ) {
@@ -232,6 +233,9 @@ class Rajaongkir {
 		if ( isset( $accountType ) ) {
 			$this->setAccountType( $accountType );
 		}
+
+		$this->client = new Client();
+
 	}
 
 	// ------------------------------------------------------------------------
@@ -297,66 +301,42 @@ class Rajaongkir {
 		switch ( $this->accountType ) {
 			default:
 			case 'starter':
-				$path = 'starter/' . $path;
+				$apiUrl = 'https://api.rajaongkir.com/starter/' . $path;
 				break;
 
 			case 'basic':
-				$path = 'basic/' . $path;
+				$apiUrl = 'https://api.rajaongkir.com/basic/' . $path;
 				break;
 
 			case 'pro':
-				$apiUrl = 'https://pro.rajaongkir.com';
-				$path   = 'api/' . $path;
+				$apiUrl = 'https://pro.rajaongkir.com/api/' . $path;
 				break;
 		}
 
-		$uri     = ( new Uri( $apiUrl ) )->withPath( $path );
-		$request = new Curl\Request();
-		$request->setHeaders( [
+		$headers = [
 			'key' => $this->apiKey,
-		] );
+			'Content-Type', 'application/x-www-form-urlencoded'
+		];
 
 		switch ( $type ) {
 			default:
 			case 'GET':
-				$this->response = $request->setUri( $uri )->get( $params );
+				$this->response = $this->client->get($apiUrl, [
+					'headers' => $headers,
+					'query' => $params
+				]);
 				break;
 
 			case 'POST':
-				$request->addHeader( 'content-type', 'application/x-www-form-urlencoded' );
-				$this->response = $request->setUri( $uri )->post( $params );
+				$this->response = $this->client->post($apiUrl, [
+					'headers' => $headers,
+					'form_params' =>$params
+				]);
 				break;
 		}
 
-		// Try to get curl error
-		if ( false !== ( $error = $this->response->getError() ) ) {
-			$this->addErrors( $error->getArrayCopy() );
-		} else {
-			$body = $this->response->getBody();
-
-			if ( $body instanceof \DOMDocument ) {
-				$this->errors[404] = 'Page Not Found!';
-			} else {
-				$body   = $body->rajaongkir;
-				$status = $body['status'];
-
-				if ( $status['code'] == 200 ) {
-					if ( isset( $body['results'] ) ) {
-						if ( count( $body['results'] ) == 1 && isset( $body['results'][0] ) ) {
-							return $body['results'][0];
-						} elseif ( count( $body['results'] ) ) {
-							return $body['results'];
-						}
-					} elseif ( isset( $body['result'] ) ) {
-						return $body['result'];
-					}
-				} else {
-					$this->errors[ $status['code'] ] = $status['description'];
-				}
-			}
-		}
-
-		return false;
+		$bodyStr = (string) $this->response->getBody();
+		return json_decode($bodyStr);
 	}
 
 	// ------------------------------------------------------------------------
@@ -381,9 +361,10 @@ class Rajaongkir {
 	 * Get list of provinces.
 	 *
 	 * @access  public
-	 * @return  array|bool Returns FALSE if failed.
+	 * @return  mixed|bool Returns FALSE if failed.
 	 */
-	public function getProvinces() {
+	public function getProvinces()
+	{
 		return $this->request( 'province' );
 	}
 

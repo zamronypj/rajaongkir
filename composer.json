@@ -1,5 +1,5 @@
 {
-  "name": "steevenz/rajaongkir",
+  "name": "juhara/rajaongkir",
   "description": "Advanced RajaOngkir API PHP Class",
   "license": "MIT",
   "type": "php-class",
@@ -13,23 +13,35 @@
       "email": "steevenz@steevenz.com",
       "homepage": "http://www.steevenz.com",
       "role": "PHP Programmer"
+    },
+    {
+      "name": "Zamrony P. Juhara",
+      "homepage": "https://juhara.com"
     }
   ],
   "support": {
-    "email": "steevenz@steevenz.com",
-    "issues": "https://github.com/steevenz/rajaongkir/issues"
+    "issues": "https://github.com/zamronypj/rajaongkir/issues"
   },
   "links": {
     "info": "https://github.com/steevenz/rajaongkir",
     "wiki": "https://github.com/steevenz/rajaongkir/wiki"
   },
   "require": {
-    "php": ">=7.2.0",
-    "o2system/curl": "*"
+    "php": "^7.4|^8.0.2",
+    "guzzlehttp/guzzle": "^7.0"
   },
   "autoload": {
-    "files": [
-      "src/Rajaongkir.php"
-    ]
+    "psr-4": {
+      "Juhara\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+        "Juhara\\Tests\\": "tests/"
+    }
+},
+
+  "require-dev": {
+    "phpunit/phpunit": "^9.0"
   }
 }
