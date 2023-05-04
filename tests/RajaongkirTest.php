@@ -29,9 +29,20 @@ final class RajaongkirTest extends TestCase
     /** @test */
     public function itShouldReturnsProvinces()
     {
-        $this->expectException(ClientException::class);
 
         $ro = new Rajaongkir($_ENV['API_KEY']);
         $resp = $ro->getProvinces();
+        $this->assertObjectHasAttribute('rajaongkir', $resp);
+        $this->assertEquals(200, $resp->rajaongkir->status->code);
+    }
+
+    /** @test */
+    public function itShouldReturnsCities()
+    {
+
+        $ro = new Rajaongkir($_ENV['API_KEY']);
+        $resp = $ro->getCities();
+        $this->assertObjectHasAttribute('rajaongkir', $resp);
+        $this->assertEquals(200, $resp->rajaongkir->status->code);
     }
 }
