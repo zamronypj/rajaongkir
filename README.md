@@ -1,121 +1,103 @@
 # RajaOngkir
 
-[![Latest Stable Version](https://poser.pugx.org/steevenz/rajaongkir/v/stable)](https://packagist.org/packages/juhara/rajaongkir)
-[![License](https://poser.pugx.org/steevenz/rajaongkir/license)](https://packagist.org/packages/juhara/rajaongkir)
+[RajaOngkir API](https://rajaongkir.com) PHP client
 
-[RajaOngkir][11] API PHP Class Library berfungsi untuk melakukan request API [RajaOngkir][11].
+- Support all kind of RajaOngkir account (Starter, Basic, Pro).
+- Get shipping cost based on weight (gram) and/or volume (width x heigth x length).
 
-Fitur
------
-- Support seluruh tipe akun RajaOngkir (Starter, Basic, Pro).
-- Support mendapatkan biaya ongkos kirim berdasarkan berat (gram) dan volume metrics (p x l x t - otomatis akan dikonversi ke satuan gram).
+## Requirements
+- PHP >= 7.4, PHP >= 8.0
+- [Composer](https://getcomposer.org)
+- [Guzzle](https://docs.guzzlephp.org/en/stable/index.html)
 
-Instalasi
----------
-Cara terbaik untuk melakukan instalasi library ini adalah dengan menggunakan [Composer][7]
+
+## Installation
+
 ```
-composer require juhara/rajaongkir
+$ composer require juhara/rajaongkir
 ```
+## Usage
+### Initialization
 
-Instalasi pada framework lain atau PHP Native
-```php
-require_once('path/to/steevenz/rajaongkir/src/autoload.php');
-```
-
-Penggunaan
-----------
+Create instance for Starter account
 ```php
 use Juhara\Rajaongkir;
 
-/*
- * --------------------------------------------------------------
- * Inisiasi Class RajaOngkir
- *
- * Tipe account yang tersedia di RajaOngkir:
- * - starter (tidak support international dan metode waybill)
- * - basic
- * - pro
- *
- * @param string|array API Key atau konfigurasi dalam array
- * @param string Account Type (lowercase)
- * --------------------------------------------------------------
- */
- $rajaongkir = new Rajaongkir('API_KEY_ANDA', Rajaongkir::ACCOUNT_STARTER);
+$rajaongkir = new Rajaongkir('YOUR_API_KEY');
+```
 
- // inisiasi dengan config array
- $config['api_key'] = 'API_KEY_ANDA';
- $config['account_type'] = 'starter';
+Create instance for Basic account
+```php
+use Juhara\Rajaongkir;
 
- $rajaongkir = new Rajaongkir($config);
+$rajaongkir = new Rajaongkir('YOUR_API_KEY', Rajaongkir::ACCOUNT_BASIC);
+```
 
-/*
- * --------------------------------------------------------------
- * Mendapatkan list seluruh propinsi
- * --------------------------------------------------------------
- */
+Create instance for Pro account
+```php
+use Juhara\Rajaongkir;
+
+$rajaongkir = new Rajaongkir('YOUR_API_KEY', Rajaongkir::ACCOUNT_PRO);
+```
+
+### Get list of provinces
+
+```php
+use Juhara\Rajaongkir;
+
+$rajaongkir = new Rajaongkir('YOUR_API_KEY', Rajaongkir::ACCOUNT_STARTER);
 $provinces = $rajaongkir->getProvinces();
 
-/*
- * --------------------------------------------------------------
- * Mendapatkan detail propinsi
- *
- * @param int Province ID
- * --------------------------------------------------------------
- */
+```
+
+### Get detail of a province
+
+```php
+// province ID = 1
 $province = $rajaongkir->getProvince(1);
+```
 
-/*
- * --------------------------------------------------------------
- * Mendapatkan list seluruh kota
- * --------------------------------------------------------------
- */
+### Get list of all cities
+
+```php
 $cities = $rajaongkir->getCities();
+```
 
-/*
- * --------------------------------------------------------------
- * Mendapatkan list seluruh kota di propinsi tertentu
- *
- * @param int Province ID (optional)
- * --------------------------------------------------------------
- */
+### Get list of cities in a province
+
+```php
+// province id = 1
 $cities = $rajaongkir->getCities(1);
+```
 
-/*
- * --------------------------------------------------------------
- * Mendapatkan detail kota
- *
- * @param int City ID
- * --------------------------------------------------------------
- */
+### Get city detail
+
+```php
+// city id = 1
 $city = $rajaongkir->getCity(1);
+```
 
-/*
- * --------------------------------------------------------------
- * Mendapatkan list seluruh subdistrict dari kota tertentu
- *
- * @param int City ID (optional)
- * --------------------------------------------------------------
- */
+### Get list of subdistricts in a city
+
+```php
+// city id = 39
 $subdistricts = $rajaongkir->getSubdistricts(39);
+```
 
-/*
- * --------------------------------------------------------------
- * Mendapatkan detail subdistrict
- *
- * @param int Subdistrict ID
- * --------------------------------------------------------------
- */
+### Get subdistrict detail
+
+```php
+// subdistrict id = 537
 $subdistrict = $rajaongkir->getSubdistrict(537);
+```
 
-/*
- * --------------------------------------------------------------
- * Mendapatkan list seluruh kota yang mendukung pengiriman
- * ke Internasional
- * (tidak tersedia untuk tipe account starter)
- * --------------------------------------------------------------
- */
+### Get list all cities with international shipping support
+
+```php
+// not available for starter
 $internationalOrigins = $rajaongkir->getInternationalOrigins();
-
+```
+```php
 /*
  * --------------------------------------------------------------
  * Mendapatkan list seluruh kota yang mendukung pengiriman
@@ -267,35 +249,4 @@ $cost = $rajaongkir->getCost(['city' => 152], ['country' => 108], 1400, 'pos');
  $supportedWayBills = $rajaongkir->getSupportedWayBills();
 ```
 
-Untuk keterangan lebih lengkap dapat dibaca di [Wiki](https://github.com/steevenz/rajaongkir/wiki)
 
-Ide, Kritik dan Saran
----------------------
-Jika anda memiliki ide, kritik ataupun saran, anda dapat mengirimkan email ke [steevenz@stevenz.com][3].
-Anda juga dapat mengunjungi situs pribadi saya di [steevenz.com][1]
-
-Bugs and Issues
----------------
-Jika anda menemukan bugs atau issue, anda dapat mempostingnya di [Github Issues][6].
-
-Requirements
-------------
-- PHP 7.2+
-- [Composer][9]
-- [O2System Curl][10]
-
-Referensi
----------
-Untuk mengetahui lebih lanjut mengenai RajaOngkir API, lihat di [Dokumentasi RajaOngkir][12].
-
-[1]: http://steevenz.com
-[2]: http://steevenz.com/blog/rajaongkir-api
-[3]: mailto:steevenz@steevenz.com
-[4]: http://github.com/steevenz/rajaongkir
-[5]: http://github.com/steevenz/rajaongkir/wiki
-[6]: http://github.com/steevenz/rajaongkir/issues
-[7]: https://packagist.org/packages/steevenz/rajaongkir
-[9]: https://getcomposer.org
-[10]: http://github.com/o2system/curl
-[11]: http://rajaongkir.com
-[12]: http://rajaongkir.com/dokumentasi
