@@ -193,16 +193,6 @@ class Rajaongkir {
 		'star'      => 'Star Cargo (STAR)',
 	];
 
-	/**
-	 * Rajaongkir::$response
-	 *
-	 * Rajaongkir response.
-	 *
-	 * @access  protected
-	 * @type    mixed
-	 */
-	protected $response;
-
 	private $client;
 
 	// ------------------------------------------------------------------------
@@ -318,24 +308,26 @@ class Rajaongkir {
 			'Content-Type', 'application/x-www-form-urlencoded'
 		];
 
+		$resp = null;
+
 		switch ( $type ) {
 			default:
 			case 'GET':
-				$this->response = $this->client->get($apiUrl, [
+				$resp = $this->client->get($apiUrl, [
 					'headers' => $headers,
 					'query' => $params
 				]);
 				break;
 
 			case 'POST':
-				$this->response = $this->client->post($apiUrl, [
+				$resp = $this->client->post($apiUrl, [
 					'headers' => $headers,
 					'form_params' =>$params
 				]);
 				break;
 		}
 
-		$bodyStr = (string) $this->response->getBody();
+		$bodyStr = (string) $resp->getBody();
 		return json_decode($bodyStr);
 	}
 
