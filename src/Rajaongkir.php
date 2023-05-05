@@ -810,19 +810,4 @@ class Rajaongkir {
 		return false;
 	}
 
-	// ------------------------------------------------------------------------
-
-	/**
-	 * Rajaongkir::getResponse
-	 *
-	 * Get original response object.
-	 *
-	 * @param string $offset Response Offset Object
-	 *
-	 * @access  public
-	 * @return  \O2System\Curl\Response|bool Returns FALSE if failed.
-	 */
-	public function getResponse() {
-		return $this->response;
-	}
 }

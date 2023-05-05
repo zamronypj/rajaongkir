@@ -5,7 +5,11 @@
 - Support all kind of RajaOngkir account (Starter, Basic, Pro).
 - Get shipping cost based on weight (gram) and/or volume (width x heigth x length).
 
+This is [original RajaOngkir library](https://github.com/steevenz/rajaongkir) fork  with goal to add
+PHP 8.0 support also replace HTTP Client with Guzzle.
+
 ## Requirements
+
 - PHP >= 7.4, PHP >= 8.0
 - [Composer](https://getcomposer.org)
 - [Guzzle](https://docs.guzzlephp.org/en/stable/index.html)
@@ -17,6 +21,7 @@
 $ composer require juhara/rajaongkir
 ```
 ## Usage
+
 ### Initialization
 
 Create instance for Starter account
@@ -97,150 +102,136 @@ $subdistrict = $rajaongkir->getSubdistrict(537);
 // not available for starter
 $internationalOrigins = $rajaongkir->getInternationalOrigins();
 ```
+
+### Get list all cities  in a province with international shipping support
+
 ```php
-/*
- * --------------------------------------------------------------
- * Mendapatkan list seluruh kota yang mendukung pengiriman
- * ke Internasional di propinsi tertentu
- * (tidak tersedia untuk tipe account starter)
- *
- * @param int Province ID (optional)
- * --------------------------------------------------------------
- */
+// not available for starter
+// province id = 6
 $internationalOrigins = $rajaongkir->getInternationalOrigins(6);
+```
 
-/*
- * --------------------------------------------------------------
- * Mendapatkan detail Origin Internasional
- * (tidak tersedia untuk tipe account starter)
- *
- * @param int City ID (optional)
- * @param int Province ID (optional)
- * --------------------------------------------------------------
- */
+### Get international origin detail
+
+```php
+// not available for starter
+// city id = 152
+// province id = 6
 $internationalOrigin = $rajaongkir->getInternationalOrigin(152, 6);
+```
 
-/*
- * --------------------------------------------------------------
- * Mendapatkan list seluruh negara tujuan Internasional
- * (tidak tersedia untuk tipe account starter)
- * --------------------------------------------------------------
- */
+### Get international country list
+
+```php
+// not available for starter
 $internationalDestinations = $rajaongkir->getInternationalDestinations();
+```
 
-/*
- * --------------------------------------------------------------
- * Mendapatkan detail tujuan Internasional
- * (tidak tersedia untuk tipe account starter)
- *
- * @param int Country ID
- * --------------------------------------------------------------
- */
+### Get international destination detail
+
+```php
+// not available for starter
+// country id = 108
 $internationalDestination = $rajaongkir->getInternationalDestination(108);
+```
 
-/*
- * --------------------------------------------------------------
- * Mendapatkan harga ongkos kirim berdasarkan berat dalam gram
- *
- * @param array Origin
- * @param array Destination
- * @param int|array Weight|Metrics
- * @param string Courier
- * --------------------------------------------------------------
- */
+### Get shipping cost based on weight (in gram)
+
+```php
+// origin city id = 501
+// destination subdistrict  id = 574
+// weight 1000 gram
+// courier = 'jne'
 $cost = $rajaongkir->getCost(['city' => 501], ['subdistrict' => 574], 1000, 'jne');
+```
 
-/*
- * --------------------------------------------------------------
- * Mendapatkan harga ongkos kirim berdasarkan volume metrics
- * atau berdasarkan ukuran panjang x lebar x tinggi
- *
- * Catatan:
- * Berat akan otomatis dihitung berdasarkan volume metrics.
- *
- * @param array Origin
- * @param array Destination
- * @param int|array Weight|Metrics
- * @param string Courier
- * --------------------------------------------------------------
- */
-$cost = $rajaongkir->getCost(['city' => 501], ['subdistrict' => 574],
-                    [
-                        'length' => 50,
-                        'width'  => 50,
-                        'height' => 50,
-                    ], 'jne');
+### Get shipping cost based on volume
 
-/*
- * --------------------------------------------------------------
- * Mendapatkan harga ongkos kirim berdasarkan berat dalam gram
- * atau berdasarkan ukuran panjang x lebar x tinggi
- *
- * Catatan:
- * Jika ukuran menghasilkan berat yang lebih besar dari
- * berat yang didefinisikan, berat yang akan dipakai sebagai
- * kalkulasi ongkos kirim adalah berat berdasarkan volume metrics
- *
- * @param array Origin
- * @param array Destination
- * @param int|array Weight|Metrics
- * @param string Courier
- * --------------------------------------------------------------
- */
- $cost = $rajaongkir->getCost(['city' => 501], ['subdistrict' => 574],
-                     [
-                         'weight' => 1000,
-                         'length' => 50,
-                         'width'  => 50,
-                         'height' => 50,
-                     ], 'jne');
+```php
+// origin city id = 501
+// destination subdistrict  id = 574
+// volume 50x60x70
+// courier = 'jne'
+$cost = $rajaongkir->getCost(
+    ['city' => 501],
+    ['subdistrict' => 574],
+    [
+        'width'  => 50,
+        'height' => 60,
+        'length' => 70,
+    ],
+    'jne'
+);
+```
 
-/*
- * --------------------------------------------------------------
- * Mendapatkan harga ongkos kirim international berdasarkan berat
- * dalam gram (tidak tersedia untuk tipe account starter)
- *
- * @param array Origin
- * @param array Destination
- * @param int|array Weight|Metrics
- * @param string Courier
- * --------------------------------------------------------------
- */
-$cost = $rajaongkir->getCost(['city' => 152], ['country' => 108], 1400, 'pos');
+### Get shipping cost based on weight or volume
 
-/*
- * --------------------------------------------------------------
- * Melacak status pengiriman
- *
- * @param string Receipt ID (Nomor Resi Pengiriman)
- * @param string Courier
- * --------------------------------------------------------------
- */
+```php
+// origin city id = 501
+// destination subdistrict  id = 574
+// weight 1000 gram
+// volume 50x60x70
+// courier = 'jne'
+$cost = $rajaongkir->getCost(
+    ['city' => 501],
+    ['subdistrict' => 574],
+    [
+        'weight' => 1000,
+        'length' => 50,
+        'width'  => 50,
+        'height' => 50,
+    ],
+    'jne'
+);
+```
+
+### Get international shipping cost based on weight
+
+```php
+// not available for starter
+// origin city id = 152
+// destination country id = 108
+// weight 1400 gram
+// courier = 'pos'
+$cost = $rajaongkir->getCost(
+    ['city' => 152],
+    ['country' => 108],
+    1400,
+    'pos'
+);
+```
+
+### Track shipping
+
+```php
+// receipt id (no resi pengiriman) = 'SOCAG00183235715'
+// courier = 'jne'
  $waybill = $rajaongkir->getWaybill('SOCAG00183235715', 'jne');
+```
 
-/*
- * --------------------------------------------------------------
- * Mendapatkan informasi nilai tukar rupiah terhadap US dollar.
- * --------------------------------------------------------------
- */
+### Get IDR currency exchange to USD
+
+```php
  $currency = $rajaongkir->getCurrency();
+```
 
-/*
- * --------------------------------------------------------------
- * Melakukan debugging errors.
- * --------------------------------------------------------------
- */
+### Get latest error
+
+```php
+// get latest error
  if(false === ($waybill = $rajaongkir->getWaybill('SOCAG00183235715', 'jne'))) {
-    print_out($rajaongkir->getErrors());
+    var_dump($rajaongkir->getErrors());
  }
+```
 
-/*
- * --------------------------------------------------------------
- * Mendapatkan daftar courier yang didukung oleh tipe akun anda
- * --------------------------------------------------------------
- */
+### Get courier list based on account type
+
+```php
  $supportedCouriers = $rajaongkir->getSupportedCouriers();
+```
 
+### Get courier list based on account type
+```php
 /*
  * --------------------------------------------------------------
  * Mendapatkan daftar way bill courier yang didukung oleh tipe akun anda
