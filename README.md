@@ -230,13 +230,8 @@ $cost = $rajaongkir->getCost(
  $supportedCouriers = $rajaongkir->getSupportedCouriers();
 ```
 
-### Get courier list based on account type
+### Get waybill tracking list based on account type
 ```php
-/*
- * --------------------------------------------------------------
- * Mendapatkan daftar way bill courier yang didukung oleh tipe akun anda
- * --------------------------------------------------------------
- */
  $supportedWayBills = $rajaongkir->getSupportedWayBills();
 ```
 
