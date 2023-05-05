@@ -26,12 +26,17 @@ $ composer require juhara/rajaongkir
 
 Create instance for Starter account
 ```php
-use Juhara\Rajaongkir;
+$rajaongkir = new Juhara\Rajaongkir('YOUR_API_KEY', Rajaongkir::ACCOUNT_STARTER);
+```
 
-$rajaongkir = new Rajaongkir('YOUR_API_KEY');
+When account type is not set, it is assumed starter, so code below is same as above.
+
+```php
+$rajaongkir = new Juhara\Rajaongkir('YOUR_API_KEY');
 ```
 
 Create instance for Basic account
+
 ```php
 use Juhara\Rajaongkir;
 
@@ -39,6 +44,7 @@ $rajaongkir = new Rajaongkir('YOUR_API_KEY', Rajaongkir::ACCOUNT_BASIC);
 ```
 
 Create instance for Pro account
+
 ```php
 use Juhara\Rajaongkir;
 
@@ -48,9 +54,6 @@ $rajaongkir = new Rajaongkir('YOUR_API_KEY', Rajaongkir::ACCOUNT_PRO);
 ### Get list of provinces
 
 ```php
-use Juhara\Rajaongkir;
-
-$rajaongkir = new Rajaongkir('YOUR_API_KEY', Rajaongkir::ACCOUNT_STARTER);
 $provinces = $rajaongkir->getProvinces();
 
 ```
